@@ -1,0 +1,60 @@
+pragma solidity ^0.8.0;
+
+contract Rewards {
+    // The address of the admin
+    address payable public admin;
+    // The list of rewards
+    struct Reward {
+        string name;
+        uint256 tokenCost;
+    }
+    mapping(uint256 => Reward) public rewardsList;
+    uint256 public rewardsCount;
+
+    // Constructor function
+    constructor() public {
+        // Assign the msg.sender address as the admin address
+        admin = msg.sender;
+        rewardsCount = 0;
+    }
+
+    // Function to add a new reward to the list
+    function addReward(string memory name, uint256 tokenCost) public {
+        // Only the admin can add a new reward
+        require(msg.sender == admin, "Only the admin can add a new reward");
+        // Add the new reward to the list
+        rewardsList[rewardsCount] = Reward(name, tokenCost);
+        rewardsCount++;
+    }
+
+    // Function to update an existing reward
+    function updateReward(uint256 rewardId, string memory name, uint256 tokenCost) public {
+        // Only the admin can update a reward
+        require(msg.sender == admin, "Only the admin can update a reward");
+        // Ensure that the rewardId exists
+        require(rewardId < rewardsCount, "Invalid rewardId");
+        // Update the existing reward
+        rewardsList[rewardId].name = name;
+        rewardsList[rewardId].tokenCost = tokenCost;
+    }
+
+    // Function to remove an existing reward
+    function removeReward(uint256 rewardId) public {
+        // Only the admin can remove a reward
+        require(msg.sender == admin, "Only the admin can remove a reward");
+        // Ensure that the rewardId exists
+        require(rewardId < rewardsCount, "Invalid rewardId");
+        // Remove the existing reward
+        delete rewardsList[rewardId];
+    }
+
+    // Function to redeem a reward
+    function redeemReward(uint256 rewardId, address payable user) public {
+        // Check if the user has enough tokens to redeem the reward
+        require(Token(tokenAddress).balanceOf[user] >= rewardsList[rewardId].tokenCost, "Insufficient balance");
+        // Subtract the tokens from the user's balance
+        Token(tokenAddress).transferFrom(user, address(this), rewardsList[rewardId].tokenCost);
+        // Emit an event to notify the user that their reward has been redeemed
+        emit RewardRedeemed(user, rewardsList[rewardId].name);
+    }
+}
