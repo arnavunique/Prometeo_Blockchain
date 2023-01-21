@@ -1,0 +1,36 @@
+// In the front-end React component
+import React, { useState, useEffect } from 'react';
+import Web3 from 'web3';
+
+const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
+const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+
+function Wallet() {
+  const [balance, setBalance] = useState(0);
+  const [toAddress, setToAddress] = useState('');
+  const [transferAmount, setTransferAmount] = useState(0);
+
+  useEffect(() => {
+    async function getBalance() {
+      const balance = await tokenContract.methods.balanceOf(web3.eth.defaultAccount).call();
+      setBalance(balance);
+    }
+    getBalance();
+  }, []);
+
+  async function handleTransfer() {
+    const tx = await tokenContract.methods.transfer(toAddress, transferAmount).send({ from: web3.eth.defaultAccount });
+    console.log(tx);
+  }
+
+  return (
+    <div>
+      <p>Your balance: {balance}</p>
+      <input type="text" placeholder="To address" onChange={e => setToAddress(e.target.value)} />
+      <input type="number" placeholder="Transfer amount" onChange={e => setTransferAmount(e.target.value)} />
+      <button onClick={handleTransfer}>Transfer</button>
+    </div>
+  );
+}
+
+export default Wallet;
