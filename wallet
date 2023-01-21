@@ -1,0 +1,28 @@
+const crypto = require('crypto');
+const elliptic = require('elliptic').ec;
+const ec = new elliptic('secp256k1');
+
+class Wallet {
+    constructor() {
+        this.generateKeyPair();
+    }
+
+    generateKeyPair() {
+        // Generate a private key
+        this.privateKey = ec.genKeyPair();
+        // Get the corresponding public key
+        this.publicKey = this.privateKey.getPublic();
+    }
+
+    getAddress() {
+        // Get the X and Y coordinates of the public key
+        const x = this.publicKey.getX().toString(16);
+        const y = this.publicKey.getY().toString(16);
+        // Concatenate the X and Y coordinates
+        const publicKey = x + y;
+        // Hash the public key
+        const hash = crypto.createHash('sha256').update(publicKey).digest('hex');
+        // Use the hash as the address of the user's wallet
+        return hash;
+    }
+}
