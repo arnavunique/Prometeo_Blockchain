@@ -1,0 +1,27 @@
+pragma solidity ^0.8.0;
+
+contract IDCard {
+    // The mapping of student ID to their ID card information
+    mapping(address => struct IDCardInfo) public idCards;
+    // The address of the admin
+    address payable public admin;
+
+    struct IDCardInfo {
+        string name;
+        string studentID;
+        string batch;
+        string profileImageHash;
+    }
+
+    // Constructor function
+    constructor() public {
+        // Assign the msg.sender address as the admin address
+        admin = msg.sender;
+    }
+
+    // Function to issue an ID card
+    function issueIDCard(address student, string memory name, string memory studentID, string memory batch, string memory profileImageHash) public {
+        // Only the admin can issue ID cards
+        require(msg.sender == admin, "Only the admin can issue ID cards");
+        // Ensure that the student does not already have an ID card
+       
