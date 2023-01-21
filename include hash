@@ -1,0 +1,23 @@
+class Block {
+    constructor(index, timestamp, data, previousHash, transactionHash) {
+        this.index = index;
+        this.timestamp = timestamp;
+        this.data = data;
+        this.previousHash = previousHash;
+        this.transactionHash = transactionHash;
+        this.hash = this.calculateHash();
+    }
+
+    calculateHash() {
+        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.transactionHash).toString();
+    }
+
+    addTransaction(transaction) {
+        this.transactionHash = transaction.calculateHash();
+    }
+}
+
+class Transaction {
+    constructor(fromAddress, toAddress, value) {
+        this.fromAddress = fromAddress;
+        this.to
