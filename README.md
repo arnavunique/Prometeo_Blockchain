@@ -1,6 +1,6 @@
 # Prometeo_Blockchain
 To design a decentralized digital currency system for the institute, we have taken the following steps:<br />
-<br /><br />
+<br />
 1. Create a blockchain network using a consensus algorithm such as Proof of Work or Proof of Stake.<br />
 2. Develop smart contracts for the token creation and management. The admin should have the ability to add tokens to a particular user's wallet, recognizing their work.<br />
 3. Develop a wallet for each user that contains private and public keys. Use the hash of the public key as the address of each user's wallet.<br />
