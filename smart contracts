@@ -1,0 +1,46 @@
+pragma solidity ^0.8.0;
+
+contract Token {
+    // The address of the admin
+    address payable public admin;
+    // The total supply of tokens
+    uint256 public totalSupply;
+    // The balance of each user's wallet
+    mapping(address => uint256) public balanceOf;
+    // Event for token transfer
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    // Constructor function
+    constructor() public {
+        // Assign the msg.sender address as the admin address
+        admin = msg.sender;
+        // Set the total supply of tokens to 0
+        totalSupply = 0;
+    }
+
+    // Function to mint new tokens
+    function mint(address payable to, uint256 value) public {
+        // Only the admin can mint new tokens
+        require(msg.sender == admin, "Only the admin can mint new tokens");
+        // Increase the total supply of tokens
+        totalSupply += value;
+        // Add the minted tokens to the user's wallet
+        balanceOf[to] += value;
+        // Emit a transfer event
+        emit Transfer(address(0), to, value);
+    }
+
+    // Function to transfer tokens from one user to another
+    function transfer(address payable to, uint256 value) public {
+        // Check if the sender has enough tokens to transfer
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
+        // Check if the sender is not sending tokens to themselves
+        require(to != msg.sender, "Cannot transfer to yourself");
+        // Subtract the tokens from the sender's balance
+        balanceOf[msg.sender] -= value;
+        // Add the tokens to the recipient's balance
+        balanceOf[to] += value;
+        // Emit a transfer event
+        emit Transfer(msg.sender, to, value);
+    }
+}
